@@ -1,13 +1,33 @@
-5. гигабайт ОЗУ 40 гб на диске
-8.1. 1985:history-size (unset)
-8.2. ignoreboth не сохраняет строки начинающиеся с символа <пробел>, и не сохраняет строки, совпадающие с последней выполненной командой
-9. 786 {} Скобки необходимы, чтобы избежать конфликтов при раскрытии имени пути
-"When a positional parameter consisting of more than a single digit is expanded, it must be enclosed in braces"  на 421 строке
- что дословно:
-"Когда позиционный параметр, состоящий более чем из одной цифры, раскрывается, он должен быть заключен в фигурные скобки."
-А более точно описано в разделе -EXPANSION c 814 строки по 867( Brace Expansion на 829).
-10. touch arg{1..100000} 100000 создает, 300000 нет,я так понимаю как то связано с со stack-size но как не понял
-11. grep: Unmatched [, [^, [:, [., or [=
-12. Рзобрался. получилось через PATH=/tmp/new_path_directory/:$PATH
-13. команда at используется для назначения одноразового задания на заданное время, а команда batch — 
-для назначения одноразовых задач, которые должны выполняться, когда загрузка системы становится меньше 0,8
+1. так как :"whereis cd
+cd:"
+прихожу к выводу что это не отдельная программа.Нашёл описание cd в мануале bash,
+так что походе что cd это команда bash для смены дериктории
+
+5. vagrant@vagrant:~$ echo "blablabla" >1
+vagrant@vagrant:~$ cat <1 >2
+vagrant@vagrant:~$ cat 2
+blablabla
+
+6. думаю пока в окно эмулятора не переключюсь не увижу
+
+10. 226 строка /proc/<PID>/cmdline содержит полный путь до процесса если процесс не зомби
+279 строка /proc/[pid]/exe символическая ссылка с фвктическим путем к исполняемому файлу
+
+12. Я так понимаю потомцу что подключившись по SSH я уже подключился к системе по PTS, по этому пишет что не TTY
+ключ -t выделяет новое PTS.мануал по SSH пишет следующее:"Принудительное выделение псевдотерминала. 
+Это можно использовать для выполнения произвольных экранных программ на удаленном компьютере,
+ что может быть очень полезно, например при реализации услуг меню. 
+Несколько параметров -t принудительно выделяют tty, даже если ssh не имеет локального tty"  
+The authenticity of host 'localhost (::1)' can't be established.
+ECDSA key fingerprint is SHA256:wSHl+h4vAtTT7mbkj2lbGyxWXWTUf6VUliwpncjwLPM.
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added 'localhost' (ECDSA) to the list of known hosts.
+vagrant@localhost's password:
+Permission denied, please try again.
+vagrant@localhost's password:
+not a tty
+vagrant@vagrant:~$ ssh localhost -t 'tty'
+vagrant@localhost's password:
+/dev/pts/2
+Connection to localhost closed.
+
