@@ -1,33 +1,34 @@
-(1). так как :"whereis cd  
-cd:"  
-прихожу к выводу что это не отдельная программа.Нашёл описание cd в мануале bash,
-так что походе что cd это команда bash для смены дериктории
+1. chdir("/tmp")
 
-(5). echo "blablabla" >1  
-   vagrant@vagrant:$ cat <1 >2  
-   vagrant@vagrant:$ cat 2  
-   blablabla  
+2. Я так понимаю сначала обращается к /lib/x86_64-linux-gnu/libmagic.so.1" в котором указаны пути к бд. В итоге обращается к openat "/etc/magic" и "/usr/share/misc/magic.mgc"
+3. обнулить содержимое дескриптора файла я полагаю
 
-(6). думаю пока в окно эмулятора не переключюсь не увижу  
+4. Да.Пока дочерний процесс не вернёт код возврата он останиться висеть в таблице процессов,занимаю ресурсы CPU
 
-(10). 226 строка /proc/<PID>/cmdline содержит полный путь до процесса если процесс не зомби  
-    279 строка /proc/[pid]/exe символическая ссылка с фвктическим путем к исполняемому файлу  
+5. Если я правильно понял задание,то: 
+	sudo /usr/sbin/opensnoop-bpfcc -d 1
+	PID    COMM               FD ERR PATH
+	798    vminfo              6   0 /var/run/utmp
+	587    dbus-daemon        -1   2 /usr/local/share/dbus-1/system-services
+	587    dbus-daemon        19   0 /usr/share/dbus-1/system-services
+	587    dbus-daemon        -1   2 /lib/dbus-1/system-services
+	587    dbus-daemon        19   0 /var/lib/snapd/dbus-1/system-services/
+6. uname использует системный вызов uname. в мануале на debian ни слова не сказано о том откуда uname подтягивает информацию  и почему то нет второго мануала.в мануале с rhel:
+	65:       Part of the utsname information is also accessible  via  /proc/sys/ker
+	66-       nel/ostype, hostname, osrelease, version, domainname.
 
-(12). Я так понимаю потомцу что подключившись по SSH я уже подключился к системе по PTS, по этому пишет что не TTY  
-ключ -t выделяет новое PTS.мануал по SSH пишет следующее:"Принудительное выделение псевдотерминала.  
-Это можно использовать для выполнения произвольных экранных программ на удаленном компьютере,  
- что может быть очень полезно, например при реализации услуг меню.  
-Несколько параметров -t принудительно выделяют tty, даже если ssh не имеет локального tty"    
-The authenticity of host 'localhost (::1)' can't be established.  
-ECDSA key fingerprint is SHA256:wSHl+h4vAtTT7mbkj2lbGyxWXWTUf6VUliwpncjwLPM.  
-Are you sure you want to continue connecting (yes/no/[fingerprint])? yes  
-Warning: Permanently added 'localhost' (ECDSA) to the list of known hosts.  
-vagrant@localhost's password:  
-Permission denied, please try again.  
-vagrant@localhost's password:  
-not a tty  
-vagrant@vagrant:~$ ssh localhost -t 'tty'  
-vagrant@localhost's password:  
-/dev/pts/2  
-Connection to localhost closed.  
+7.в мануале баша написано: command1  command2
+	command2 is executed if, and only if, command1 returns an exit status of zero (success).
+	соответвенно если первая команда не вернет exit 0 то тогда вторая и не начнёт отрабатывать.
+
+	; - знак последовательного разделения команд,второй команде всеравно,как отработала первая
+
+	set -e вернёт exit (0)если вернется не нулевое значение exit последней выполненной команды,что приминительно к данному примеру позволит выполнить вторую команду так как первая по 	окончанию вернёт exit(0)(set -e test -d /tmp/some_dir  echo Hi)
+
+8. -e Немедленный выход, если команда завершается с ненулевым статусом.
+	-u Обрабатывать неустановленные переменные как ошибку при подстановке
+	-x Печатать команды и их аргументы по мере их выполнения.
+	-o pipefail сли вышеуказанные команды завершились успешно,то возвращается exit(0),если нет то 1
+	нужно для того что бы понимать что происходит во время скрипта и контролировать его выполнение на каждом этапе.
+9. У меня в основном S(процесс ожидает (т.е. спит менее 20 секунд)) и I(процесс в приоритетном режиме бездействует (т.е. спит больше 20 секунд))
 
