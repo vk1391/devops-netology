@@ -10,7 +10,6 @@
 
 6. вроде как вышло,с командой sleep почему то дважды отработала.
    1754 pts/2    00:00:00 sleep
-
 	vagrant@vagrant:~$ sudo nsenter --target 1754 --pid --mount
 	root@vagrant:/# ps -aux
 	USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
