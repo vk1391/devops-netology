@@ -1,4 +1,12 @@
-1-3. скажите как подтвердить результат подтвержу.Скриншот по 3 могу приложить.
+1.	[Unit]
+	Description=Node_exporter
+	After=multi-user.target
+	[Service]
+	Type=idle
+	ExecStart=/home/vagrant/node_exporter-1.2.2.linux-amd64/node_exporter -f $EXTRA_OPTS
+	[Install]
+	WantedBy=multi-user.target
+
 
 4. сделав dmesg -H 
 	DMI: innotek GmbH VirtualBox/VirtualBox, BIOS VirtualBox 12/01/2006
@@ -8,7 +16,13 @@
 
 5. fs.nr_open = 1048576 - максимальное значение открытых дескрипторов,соответвует строке open files в ulinit -aH.
 
-6. вроде как вышло,с командой sleep почему то дважды отработала.
+6. "Ubuntu / Canonical решили показать ошибку. Debian решил предоставить тот же вывод как для ps -aux, так и ps aux.
+	 В общем, довольно запутанно.
+	 Но, как сказано: это / должно было сделать скрипты совместимыми.
+	 И вы можете использовать то, что вам нравится."
+	 Так и я из под рута заходил, так что разночтений быть не должно.
+
+	вроде как вышло,с командой sleep почему то дважды отработала.
    
 	1754 pts/2    00:00:00 sleep
 
