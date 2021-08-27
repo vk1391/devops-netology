@@ -1,11 +1,20 @@
 1.	[Unit]
+
+
 	Description=Node_exporter
+
 	After=multi-user.target
+
 	[Service]
+
 	Type=idle
+
 	ExecStart=/home/vagrant/node_exporter-1.2.2.linux-amd64/node_exporter -f $EXTRA_OPTS
+
 	[Install]
+
 	WantedBy=multi-user.target
+
 
 
 4. сделав dmesg -H 
