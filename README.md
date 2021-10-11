@@ -17,14 +17,14 @@
 	Set-Cookie: prov=91915ec2-3bd6-e3a9-5077-9819628df133; domain=.stackoverflow.com; 	expires=Fri, 01-Jan-2055 00:00:00 GMT; path=/; HttpOnly"```
 	Происходит перевод на https
 
-3-4.```	route:          217.197.224.0/20
+3-4. ```route:          217.197.224.0/20
 	descr:          SEVEREN
 	origin:         AS24739
 	mnt-by:         SEVEREN-MNT
 	created:        2009-02-27T07:51:44Z
 	last-modified:  2009-02-27T07:51:44Z
-	source:         RIPE
-```
+	source:         RIPE ```
+
 5-6.```	traceroute -An 8.8.8.8
 	traceroute to 8.8.8.8 (8.8.8.8), 30 hops max, 60 byte packets
  	1  10.0.2.2 [*]  0.246 ms  0.199 ms  0.172 ms
