@@ -1,4 +1,4 @@
-1. HTTP/1.1 301 Moved Permanently
+1.	"HTTP/1.1 301 Moved Permanently
 	cache-control: no-cache, no-store, must-revalidate
 	location: https://stackoverflow.com/questions
 	x-request-guid: 03c7d306-3889-4227-8855-fd4abf9f7916
@@ -14,7 +14,7 @@
 	X-Timer: S1633957513.687644,VS0,VE74
 	Vary: Fastly-SSL
 	X-DNS-Prefetch-Control: off
-	Set-Cookie: prov=91915ec2-3bd6-e3a9-5077-9819628df133; domain=.stackoverflow.com; 	expires=Fri, 01-Jan-2055 00:00:00 GMT; path=/; HttpOnly
+	Set-Cookie: prov=91915ec2-3bd6-e3a9-5077-9819628df133; domain=.stackoverflow.com; 	expires=Fri, 01-Jan-2055 00:00:00 GMT; path=/; HttpOnly"
 	Происходит перевод на https
 
 3-4.	route:          217.197.224.0/20
