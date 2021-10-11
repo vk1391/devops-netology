@@ -17,15 +17,15 @@
 	Set-Cookie: prov=91915ec2-3bd6-e3a9-5077-9819628df133; domain=.stackoverflow.com; 	expires=Fri, 01-Jan-2055 00:00:00 GMT; path=/; HttpOnly"```
 	Происходит перевод на https
 
-3-4.	route:          217.197.224.0/20
+3-4.```	route:          217.197.224.0/20
 	descr:          SEVEREN
 	origin:         AS24739
 	mnt-by:         SEVEREN-MNT
 	created:        2009-02-27T07:51:44Z
 	last-modified:  2009-02-27T07:51:44Z
 	source:         RIPE
-
-5-6.	traceroute -An 8.8.8.8
+```
+5-6.```	traceroute -An 8.8.8.8
 	traceroute to 8.8.8.8 (8.8.8.8), 30 hops max, 60 byte packets
  	1  10.0.2.2 [*]  0.246 ms  0.199 ms  0.172 ms
  	2  10.0.2.2 [*]  4.622 ms  7.765 ms  7.659 ms
@@ -51,12 +51,12 @@
 	18. (waiting for reply)
 	19. (waiting for reply)
 	20. AS15169  dns.google                                                       0.0%    16    8.4   9.4   7.0  12.1   1.6	
-
-7. 	 ANSWER SECTION:
+```
+7. ```	 ANSWER SECTION:
 	dns.google.             719     IN      A       8.8.4.4
 	dns.google.             719     IN      A       8.8.8.8
-
-8.	root@vagrant:~# dig -x 8.8.8.8
+```
+8.```	root@vagrant:~# dig -x 8.8.8.8
 
  	DiG 9.16.1-Ubuntu <<>> -x 8.8.8.8
 	global options: +cmd
@@ -70,5 +70,5 @@
 	8.8.8.8.in-addr.arpa.          IN      PTR
 
 	ANSWER SECTION:
-	8.8.8.8.in-addr.arpa.   6660    IN      PTR     dns.google.
+	8.8.8.8.in-addr.arpa.   6660    IN      PTR     dns.google. ```
 
