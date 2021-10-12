@@ -1,4 +1,4 @@
-1.	```
+1.```
 route-views>show ip route 217.197.228.106
 Routing entry for 217.197.224.0/20, supernet
   Known via "bgp 6447", distance 20, metric 0
@@ -40,8 +40,8 @@ default via 10.0.2.2 dev eth0 proto dhcp src 10.0.2.15 metric 100
 10.0.2.0/24 dev eth0 proto kernel scope link src 10.0.2.15
 10.0.2.2 dev eth0 proto dhcp scope link src 10.0.2.15 metric 100
 ```
-3-4. ```
-	vagrant@vagrant:~/devops-netology$ ss -t -a
+3-4.```
+vagrant@vagrant:~/devops-netology$ ss -t -a
 State        Recv-Q       Send-Q              Local Address:Port                 Peer Address:Port        Process
 LISTEN       0            4096                      0.0.0.0:sunrpc                    0.0.0.0:*
 LISTEN       0            4096                127.0.0.53%lo:domain                    0.0.0.0:*
