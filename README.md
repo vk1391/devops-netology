@@ -1,44 +1,58 @@
-1.	в Linux ifconfig или через ip addr,в виндовс ipconfig
+1.	```
+route-views>show ip route 217.197.228.106
+Routing entry for 217.197.224.0/20, supernet
+  Known via "bgp 6447", distance 20, metric 0
+  Tag 6939, type external
+  Last update from 64.71.137.241 3w1d ago
+  Routing Descriptor Blocks:
+  * 64.71.137.241, from 64.71.137.241, 3w1d ago
+      Route metric is 0, traffic share count is 1
+      AS Hops 2
+      Route tag 6939
+      MPLS label: none
+route-views>show bgp 217.197.228.106
+BGP routing table entry for 217.197.224.0/20, version 1034417018
+Paths: (24 available, best #22, table default)
+  Not advertised to any peer
+  Refresh Epoch 1
+  7018 1299 20485 24739
+    12.0.1.63 from 12.0.1.63 (12.0.1.63)
+      Origin IGP, localpref 100, valid, external
+      Community: 7018:5000 7018:37232
+      path 7FE14BBC6190 RPKI State valid
+      rx pathid: 0, tx pathid: 0
+  Refresh Epoch 1
+  701 1273 3216 24739
+    137.39.3.55 from 137.39.3.55 (137.39.3.55)
+      Origin IGP, localpref 100, valid, external
+      path 7FE0AD28FA20 RPKI State valid
+      rx pathid: 0, tx pathid: 0
+```
 
-2.	LLDP.пакет lldpd,команда lldpctl
-
-3.	Vlan.надо удостовериться что подгружен модуль 8021q(lsmod | grep 8021q),если нет подгрузить(modprobe 8021q),а дальше либо редактировать конфиг, либо через networkmanager,vconfig 	конфигурировать интерфейс.
-
-4.	есть с использованием LACP и без 
-	```
-Bonding  это объединение сетевых интерфейсов по определенному типу агрегации, Служит для увеличения пропускной способности и/или отказоустойчивость сети.
-
-Типы агрегации интерфейсов в Linux:
-
-Mode-0(balance-rr)  Данный режим используется по умолчанию. Balance-rr обеспечивается балансировку нагрузки и отказоустойчивость. В данном режиме сетевые пакеты отправляются по кругу, от первого интерфейса к последнему. Если выходят из строя интерфейсы, пакеты отправляются на остальные оставшиеся. Дополнительной настройки коммутатора не требуется при нахождении портов в одном коммутаторе. При разностных коммутаторах требуется дополнительная настройка.
-
-Mode-1(active-backup)  Один из интерфейсов работает в активном режиме, остальные в ожидающем. При обнаружении проблемы на активном интерфейсе производится переключение на ожидающий интерфейс. Не требуется поддержки от коммутатора.
-
-Mode-2(balance-xor)  Передача пакетов распределяется по типу входящего и исходящего трафика по формуле ((MAC src) XOR (MAC dest)) % число интерфейсов. Режим дает балансировку нагрузки и отказоустойчивость. Не требуется дополнительной настройки коммутатора/коммутаторов.
-
-Mode-3(broadcast)  Происходит передача во все объединенные интерфейсы, тем самым обеспечивая отказоустойчивость. Рекомендуется только для использования MULTICAST трафика.
-
-Mode-4(802.3ad)  динамическое объединение одинаковых портов. В данном режиме можно значительно увеличить пропускную способность входящего так и исходящего трафика. Для данного режима необходима поддержка и настройка коммутатора/коммутаторов.
-
-Mode-5(balance-tlb)  Адаптивная балансировки нагрузки трафика. Входящий трафик получается только активным интерфейсом, исходящий распределяется в зависимости от текущей загрузки канала каждого интерфейса. Не требуется специальной поддержки и настройки коммутатора/коммутаторов.
-
-Mode-6(balance-alb)  Адаптивная балансировка нагрузки. Отличается более совершенным алгоритмом балансировки нагрузки чем Mode-5). Обеспечивается балансировку нагрузки как исходящего так и входящего трафика. Не требуется специальной поддержки и настройки коммутатора/коммутаторов.```
-
-5.	В /29 8 адресов.из /24 можно получить 32 /29
-
-	```
-	net 10.10.10.0 ipmin 10.10.10.1 ipmax 10.10.10.7,br 10.10.10.8
-	net 10.10.10.9 ipmin 10.10.10.10 ipmax 10.10.10.16,br 10.10.10.17
-	net 10.10.10.18 ipmin 10.10.10.19 ipmax 10.10.10.25,br 10.10.10.26
-	```
-
-6.	я так понимаю речь о данном диапазоне адресов :
-	```100.64.0.0  100.127.255.255.```
-	я б взял /30 организовал PtP ,и прописал б маршрутизацию например.
-	для 40-50 хостов нужен /26 если по заданию
-
-7.	в win arp -a. в linux ip neigh show
-	```
-	sudo ip neigh flush all	
-	sudo ip neigh delete {ip}
-	```
+2.```
+vagrant@vagrant:~/devops-netology$ sudo ip link add name dum0 type dummy
+vagrant@vagrant:~/devops-netology$ sudo ip link set dum0 up
+vagrant@vagrant:~/devops-netology$ sudo ip addr add 10.0.0.100/32 dev dum0
+ sudo ip route add 10.0.0.100 via 10.0.2.2
+vagrant@vagrant:~/devops-netology$ ip route
+default via 10.0.2.2 dev eth0 proto dhcp src 10.0.2.15 metric 100
+10.0.0.100 via 10.0.2.2 dev eth0
+10.0.2.0/24 dev eth0 proto kernel scope link src 10.0.2.15
+10.0.2.2 dev eth0 proto dhcp scope link src 10.0.2.15 metric 100
+```
+3-4. ```
+	vagrant@vagrant:~/devops-netology$ ss -t -a
+State        Recv-Q       Send-Q              Local Address:Port                 Peer Address:Port        Process
+LISTEN       0            4096                      0.0.0.0:sunrpc                    0.0.0.0:*
+LISTEN       0            4096                127.0.0.53%lo:domain                    0.0.0.0:*
+LISTEN       0            128                       0.0.0.0:ssh                       0.0.0.0:*
+ESTAB        0            0                       10.0.2.15:ssh                      10.0.2.2:49841
+LISTEN       0            4096                         [::]:sunrpc                       [::]:*
+LISTEN       0            128                          [::]:ssh                          [::]:*
+vagrant@vagrant:~/devops-netology$ ss -u -a
+State        Recv-Q       Send-Q               Local Address:Port                 Peer Address:Port       Process
+UNCONN       0            0                    127.0.0.53%lo:domain                    0.0.0.0:*
+UNCONN       0            0                   10.0.2.15%eth0:bootpc                    0.0.0.0:*
+UNCONN       0            0                          0.0.0.0:sunrpc                    0.0.0.0:*
+UNCONN       0            0                             [::]:sunrpc                       [::]:*
+```
