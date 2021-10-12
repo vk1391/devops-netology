@@ -1,5 +1,6 @@
-1.```
-	route-views>show ip route 217.197.228.106
+1.
+```
+route-views>show ip route 217.197.228.106
 Routing entry for 217.197.224.0/20, supernet
   Known via "bgp 6447", distance 20, metric 0
   Tag 6939, type external
@@ -26,8 +27,8 @@ Paths: (24 available, best #22, table default)
     137.39.3.55 from 137.39.3.55 (137.39.3.55)
       Origin IGP, localpref 100, valid, external
       path 7FE0AD28FA20 RPKI State valid
-      rx pathid: 0, tx pathid: 0
-```
+      rx pathid: 0, tx pathid: 0 ```
+
 
 2.```
 vagrant@vagrant:~/devops-netology$ sudo ip link add name dum0 type dummy
