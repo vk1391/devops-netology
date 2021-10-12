@@ -41,8 +41,11 @@ default via 10.0.2.2 dev eth0 proto dhcp src 10.0.2.15 metric 100
 10.0.2.0/24 dev eth0 proto kernel scope link src 10.0.2.15
 10.0.2.2 dev eth0 proto dhcp scope link src 10.0.2.15 metric 100
 ```
-3-4.```
+3-4.
+```
+
 vagrant@vagrant:~/devops-netology$ ss -t -a
+
 State        Recv-Q       Send-Q              Local Address:Port                 Peer Address:Port        Process
 LISTEN       0            4096                      0.0.0.0:sunrpc                    0.0.0.0:*
 LISTEN       0            4096                127.0.0.53%lo:domain                    0.0.0.0:*
@@ -55,5 +58,5 @@ State        Recv-Q       Send-Q               Local Address:Port               
 UNCONN       0            0                    127.0.0.53%lo:domain                    0.0.0.0:*
 UNCONN       0            0                   10.0.2.15%eth0:bootpc                    0.0.0.0:*
 UNCONN       0            0                          0.0.0.0:sunrpc                    0.0.0.0:*
-UNCONN       0            0                             [::]:sunrpc                       [::]:*
-```
+UNCONN       0            0                             [::]:sunrpc                       [::]:* ```
+
