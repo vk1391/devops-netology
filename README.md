@@ -1,11 +1,11 @@
 1.```
-route-views>show ip route 217.197.228.106
+	route-views>show ip route 217.197.228.106
 Routing entry for 217.197.224.0/20, supernet
   Known via "bgp 6447", distance 20, metric 0
   Tag 6939, type external
   Last update from 64.71.137.241 3w1d ago
   Routing Descriptor Blocks:
-  * 64.71.137.241, from 64.71.137.241, 3w1d ago
+   64.71.137.241, from 64.71.137.241, 3w1d ago
       Route metric is 0, traffic share count is 1
       AS Hops 2
       Route tag 6939
