@@ -30,14 +30,17 @@
                                            VULNERABLE -- but also supports higher protocols  TLSv1.1 TLSv1.2 (likely mitigated)
  LUCKY13 (CVE-2013-0169), experimental     potentially VULNERABLE, uses cipher block chaining (CBC) ciphers with TLS. Check patches
  Winshock (CVE-2014-6321), experimental    not vulnerable (OK)
- RC4 (CVE-2013-2566, CVE-2015-2808)        no RC4 ciphers detected (OK) ```
+ RC4 (CVE-2013-2566, CVE-2015-2808)        no RC4 ciphers detected (OK) 
+```
 
 5-6. Конфиг файл прикладываю:
+
 ```
 Host Serv1
      HostName 10.0.2.16
      User vk
-     IdentityFile ~/.ssh/id_rsa ```
+     IdentityFile ~/.ssh/id_rsa 
+```
 
 7.
 ```
