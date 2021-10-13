@@ -1,6 +1,6 @@
-4.```
-
- Start 2021-10-13 07:42:02        -->> 104.22.49.171:443 (netology.ru) <<--
+4.
+```
+ Start 2021-10-13 07:42:02         104.22.49.171:443 (netology.ru) 
 
  Further IP addresses:   104.22.48.171 172.67.43.83 2606:4700:10::ac43:2b53 2606:4700:10::6816:30ab 2606:4700:10::6816:31ab
  rDNS (104.22.49.171):   --
@@ -39,7 +39,8 @@ Host Serv1
      User vk
      IdentityFile ~/.ssh/id_rsa ```
 
-7.```
+7.
+```
 sudo tcpdump -i eth0 -c100 -w hw3.9.pcap -v
 tcpdump: listening on eth0, link-type EN10MB (Ethernet), capture size 262144 bytes
 100 packets captured
