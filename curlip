@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+ip=(192.168.0.1 173.194.222.113 87.250.250.242)
+t=0
+while (($t == 0))
+do
+date >>log2
+    for a in ${ip[@]}
+    do
+	curl $a
+	t=$?
+	if (($t != 0))
+	then
+		echo "Destination host unreacheble!!!!" $a status=$t >>log2 
+        fi
+    done
+done
