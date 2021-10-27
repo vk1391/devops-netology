@@ -42,3 +42,26 @@ for result in result_os.split('\n'):
         prepare_result = result.replace('\tANSWER SECTION   ', '')
         print(prepare_result)
 ```
+питон вариант
+
+```
+import socket
+i=1
+host = 'mail.google.com'
+host2 = 'google.com'
+host3 = 'drive.google.com'
+ip1 = socket.gethostbyname(host)
+ip2 = socket.gethostbyname(host2)
+ip3 = socket.gethostbyname(host3)
+d = {host: ip1, host2: ip2, host3: ip3}
+while 1==1:
+    for x in d:
+      ipnew=socket.gethostbyname(x)
+      if ipnew == d[x] and i==1:
+        print ('MATCH', x, d[x], ipnew)
+      else :
+        print ('ERROR', x, d[x], ipnew)
+    i+=1
+    if i == 5: 
+      break
+```
