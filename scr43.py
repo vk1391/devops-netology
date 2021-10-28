@@ -1,7 +1,3 @@
-1.Раставил ковычки в девятой строке.
-
-2.
-```
 #!/usr/bin/env python3
 import socket
 import json
@@ -32,4 +28,3 @@ while 1==1:
       with open(path+x+".yml",'w') as y:
         yaml_data= yaml.dump([{x:ipnew}])
         y.write(yaml_data)
-```
