@@ -5,8 +5,7 @@
 не критичных систем можно реализовать,весь вопрос в вычислительных мощностях сервера,если использовать 
 разные хостовые машины для ELK и prometheus и Grafana то возможно.
 
-3. ```
-vagrant@vagrant:~$ docker exec -it ecc703f857d8 touch /data/file1
+3. ```vagrant@vagrant:~$ docker exec -it ecc703f857d8 touch /data/file1
 vagrant@vagrant:~$ pwd
 vagrant@vagrant:~/data$ touch file2
 vagrant@vagrant:~/data$ ll
@@ -25,6 +24,5 @@ total 8
 drwxrwxr-x 2 1000 1000 4096 Dec 21 19:12 .
 drwxr-xr-x 1 root root 4096 Dec 21 19:08 ..
 -rw-r--r-- 1 root root    0 Dec 21 19:12 file1
--rw-rw-r-- 1 1000 1000    0 Dec 21 19:12 file2
-```
+-rw-rw-r-- 1 1000 1000    0 Dec 21 19:12 file2```
 
