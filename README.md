@@ -1,5 +1,5 @@
-1.```
-   yandex: Complete!
+```
+1.  yandex: Complete!
 ==> yandex: Stopping instance...
 ==> yandex: Deleting instance...
     yandex: Instance has been deleted!
