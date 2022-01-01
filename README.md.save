@@ -1,0 +1,18 @@
+1.  https://hub.docker.com/repository/docker/f6987c8d6ed5/nginx2
+
+2.  Из всех перечисленных вариантов я б использовал докер на этапе разработки 
+в первых трёх случаях.В продакшн бы на докере не вывел.Что касается системам мониторинга,то для 
+не критичных систем можно реализовать,весь вопрос в вычислительных мощностях сервера,если использовать 
+разные хостовые машины для ELK и prometheus и Grafana то возможно.
+
+3.``` vagrant@vagrant:~$ docker exec -it ecc703f857d8 touch /data/file1
+
+vagrant@vagrant:~$ pwd
+
+vagrant@vagrant:~/data$ touch file2
+
+vagrant@vagrant:~/data$ ll
+
+total 8
+
+drwxrwxr-x 2 vagrant vagrant 4
