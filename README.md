@@ -1,142 +1,96 @@
-
-1. - Docker-compose файл
-``` 
+1.  - Docker-compose файл:
+```
 version: '3.9'
-
+volumes:
+  data: {}
 services:
-    mysql:
-        image: mysql:latest
-        container_name: mysql
-        volumes:
-            - ./mysqldb:/var/lib/mysql
-        environment:
-            - MYSQL_ROOT_PASSWORD=1234
-        expose:
-            - '3306'
+  db:
+    image: postgres:13.5
+    restart: always
+    environment:
+      POSTGRES_DB: "test_database"
+      POSTGRES_PASSWORD: "1234"
+      PGDATA: "/var/lib/postgresql/data/pgdata"
+      POSTGRES_USER: "test"
+
+    container_name: postgre
+    volumes:
+      - ./data://var/lib/postgresql/data/pgdata"
+    ports:
+      - "5432:5432"
+  postgres=# \l
+                                     List of databases
+           Name      | Owner | Encoding |  Collate   |   Ctype    | Access privileges
+      ---------------+-------+----------+------------+------------+-------------------
+       postgres      | test  | UTF8     | en_US.utf8 | en_US.utf8 |
+       template0     | test  | UTF8     | en_US.utf8 | en_US.utf8 | =c/test          +
+                     |       |          |            |            | test=CTc/test
+       template1     | test  | UTF8     | en_US.utf8 | en_US.utf8 | =c/test          +
+                     |       |          |            |            | test=CTc/test
+       test_database | test  | UTF8     | en_US.utf8 | en_US.utf8 |
+      (4 rows)
+
+\c название базы - переключение на другую бд
+
+\dt перечень таблиц в базе
+
+ \dS+ наименование таблицы базы - описание содержимого таблиц
+
+ \q выход из сессии pgsql
+ ```
+ 2. - востановил бекап а базу 
 ```
+psql -h 172.19.0.2 -U test test_database < ~/postgres/test_dump.sql
 ```
-mysql> \s;
---------------
-mysql  Ver 8.0.27-0ubuntu0.20.04.1 for Linux on x86_64 ((Ubuntu))
-
-Connection id:          14
-Current database:       test
-Current user:           root@172.18.0.1
-SSL:                    Cipher in use is TLS_AES_256_GCM_SHA384
-Current pager:          stdout
-Using outfile:          ''
-Using delimiter:        ;
-Server version:         8.0.28 MySQL Community Server - GPL
-Protocol version:       10
-Connection:             172.18.0.2 via TCP/IP
-Server characterset:    utf8mb4
-Db     characterset:    utf8mb4
-Client characterset:    utf8mb4
-Conn.  characterset:    utf8mb4
-TCP port:               3306
-Binary data as:         Hexadecimal
-Uptime:                 30 min 41 sec
-
-Threads: 3  Questions: 66  Slow queries: 0  Opens: 168  Flush tables: 3  Open ta
-bles: 86  Queries per second avg: 0.035
---------------
-mysql> use test
-Reading table information for completion of table and column names
-You can turn off this feature to get a quicker startup with -A
-
-Database changed
-mysql> show tables;
-+----------------+
-| Tables_in_test |
-+----------------+
-| orders         |
-+----------------+
-1 row in set (0.00 sec)
-mysql> select count(*) from orders where price >300;
-+----------+
-| count(*) |
-+----------+
-|        1 |
-+----------+
-1 row in set (0.01 sec)
+  - analyze
+  ```
+ test_database=# analyze verbose orders;
+ INFO:  analyzing "public.orders"
+ INFO:  "orders": scanned 1 of 1 pages, containing 8 live rows and 0 dead rows; 8 rows in sample, 8 estimated total rows
+ ANALYZE
+ ```
+  - найдите столбец таблицы orders с наибольшим средним значением размера элементов в байтах:
+  ```
+ test_database=# select attname,avg_width from pg_stats where tablename='orders' ORDER BY abs(pg_stats.avg_width) DESC;
+  attname | avg_width
+ ---------+-----------
+  title   |        16
+  id      |         4
+  price   |         4
+ (3 rows)
+ ```
+3. - надо было сразу делать партиционирование и правила фильтрации
 ```
-2.
-``` 
-mysql> CREATE USER 'test'@'localhost' IDENTIFIED BY 'test-pass';
-Query OK, 0 rows affected (0.04 sec)
+alter table orders rename to orders_old;
+ALTER TABLE
+test_database=# create table orders (id integer, title varchar(80), price integer) partition by range(price);
+CREATE TABLE
+test_database=# create table orders_1 partition of orders for values from (0) to (499);
+CREATE TABLE
+test_database=# create table orders_2 partition of orders for values from (499) to (999999999);
+CREATE TABLE
+test_database=# insert into orders (id, title, price) select * from orders_old;
 
-mysql> ALTER USER 'test'@'localhost'
-    -> IDENTIFIED BY 'test-pass'
-    -> WITH
-    -> MAX_QUERIES_PER_HOUR 100
-    -> PASSWORD EXPIRE INTERVAL 180 DAY
-    -> FAILED_LOGIN_ATTEMPTS 3;
-Query OK, 0 rows affected (0.01 sec)
+test_database=# select * from orders_1;
 
-mysql>  ALTER USER 'test'@'localhost' ATTRIBUTE '{"fname":"James", "lname":"Pret
-ty"}';
-Query OK, 0 rows affected (0.01 sec)
-GRANT Select ON test.orders TO 'test'@'localhost';
-Query OK, 0 rows affected, 1 warning (0.01 sec)
-SELECT * FROM INFORMATION_SCHEMA.USER_ATTRIBUTES WHERE USER='test';
-+------+-----------+---------------------------------------+
-| USER | HOST      | ATTRIBUTE                             |
-+------+-----------+---------------------------------------+
-| test | localhost | {"fname": "James", "lname": "Pretty"} |
-+------+-----------+---------------------------------------+
-1 row in set (0.01 sec)
+ id |        title         | price
+----+----------------------+-------
+  1 | War and peace        |   100
+  3 | Adventure psql time  |   300
+  4 | Server gravity falls |   300
+  5 | Log gossips          |   123
+(4 rows)
+
+test_database=# select * from orders_2;
+ id |       title        | price
+----+--------------------+-------
+  2 | My little database |   500
+  6 | WAL never lies     |   900
+  7 | Me and my bash-pet |   499
+  8 | Dbiezdmin          |   501
+(4 rows)
 ```
-3.
-``` 
-mysql> SET profiling = 1;
-Query OK, 0 rows affected, 1 warning (0.00 sec)
-
-mysql> SELECT TABLE_NAME,ENGINE,ROW_FORMAT,TABLE_ROWS,DATA_LENGTH,INDEX_LENGTH FROM information_schema.TABLES WHERE table_name = 'orders' and  TABLE_SCHEMA = 'test' ORDER BY ENGINE asc;
-+------------+--------+------------+------------+-------------+--------------+
-| TABLE_NAME | ENGINE | ROW_FORMAT | TABLE_ROWS | DATA_LENGTH | INDEX_LENGTH |
-+------------+--------+------------+------------+-------------+--------------+
-| orders     | InnoDB | Dynamic    |          5 |       16384 |            0 |
-+------------+--------+------------+------------+-------------+--------------+
-1 row in set (0.00 sec)
-
-mysql> SHOW PROFILES;
-+----------+------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Query_ID | Duration   | Query                                                                                                                                                                             |
-+----------+------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-|        1 | 0.00223750 | SELECT TABLE_NAME,ENGINE,ROW_FORMAT,TABLE_ROWS,DATA_LENGTH,INDEX_LENGTH FROM information_schema.TABLES WHERE table_name = 'orders' and  TABLE_SCHEMA = 'test' ORDER BY ENGINE asc |
-+----------+------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-1 row in set, 1 warning (0.00 sec)
-
-mysql> ALTER TABLE orders ENGINE = MyISAM;
-Query OK, 5 rows affected (0.11 sec)
-Records: 5  Duplicates: 0  Warnings: 0
-
-mysql> ALTER TABLE orders ENGINE = InnoDB;
-Query OK, 5 rows affected (0.15 sec)
-Records: 5  Duplicates: 0  Warnings: 0
-
-mysql> SHOW PROFILES;
-+----------+------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Query_ID | Duration   | Query                                                                                                                                                                             |
-+----------+------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-|        1 | 0.00223750 | SELECT TABLE_NAME,ENGINE,ROW_FORMAT,TABLE_ROWS,DATA_LENGTH,INDEX_LENGTH FROM information_schema.TABLES WHERE table_name = 'orders' and  TABLE_SCHEMA = 'test' ORDER BY ENGINE asc |
-|        2 | 0.10595800 | ALTER TABLE orders ENGINE = MyISAM                                                                                                                                                |
-|        3 | 0.15031900 | ALTER TABLE orders ENGINE = InnoDB                                                                                                                                                |
-+----------+------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-3 rows in set, 1 warning (0.00 sec)
+4. - так как убунта 20 у меня пришлось обновить psql client до 13.5 версии
 ```
-4.
-```
-[mysqld]
-pid-file        = /var/run/mysqld/mysqld.pid
-socket          = /var/run/mysqld/mysqld.sock
-datadir         = /var/lib/mysql
-secure-file-priv= NULL
+pg_dump -h 172.19.0.2 -U test test_database > ~/postgres/new.psql.testdump
 
- Custom config should go here
-!includedir /etc/mysql/conf.d/
-innodb_flush_log_at_trx_commit = 2
-innodb_log_buffer_size = 1M
-key_buffer_size = 615M 
-max_binlog_size	= 100M
-```
