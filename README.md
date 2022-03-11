@@ -1,21 +1,81 @@
-1. - Какой тип инфраструктуры будем использовать для этого проекта: изменяемый или не изменяемый?
-     - в любом случае на этапе формирование задания тип инфраструктуры будет являться изменяемым, считаю что к финалу инфраструктура должна устояться.
-   - Будет ли центральный сервер для управления инфраструктурой?
-     - его наличие не обязательно
-   - Будут ли агенты на серверах?
-     - для монитринга типа Node Exporter`ов думаю необходим
-   - Будут ли использованы средства для управления конфигурацией или инициализации ресурсов?
-     - кто знает,в зависимости от ТЗ(необходимо уточнить)
-   - Какие инструменты из уже используемых вы хотели бы использовать для нового проекта?
-     - В зависимости от поставленной задачи,входных данных недостаточно.
-   - Хотите ли рассмотреть возможность внедрения новых инструментов для этого проекта?
-     - почему бы и нет
+2.  - 1. Packer
+    - 2.
+ - main.tf
+```terraform {
+  required_providers {
+    yandex = {
+      source  = "yandex-cloud/yandex"
+      version = "0.68.0"
+    }
+  }
+}
 
-2-3.
-```terraform --version
-Terraform v1.1.6
-on linux_amd64
-vagrant@vagrant:~$ ./terraform --version
-Terraform v1.0.11
-on linux_amd64
+provider "yandex" {
+token = 
+cloud_id                 = "b1g8v8m7g8l57ts5j64b"
+folder_id                = "b1g95kjdui4sc1hk937i"
+zone                     = "ru-central1-a"
+
+resource "yandex_compute_instance" "node01" {
+name                      = "node01"
+zone                      = "ru-central1-a"
+hostname                  = "node01.netology.cloud"
+allow_stopping_for_update = true
+
+resources {
+  cores  = 8
+  memory = 8
+  }
+
+  boot_disk {
+    initialize_params {
+      image_id    = "fd80le4b8gt2u33lvubr"
+      name        = "root-node01"
+      type        = "network-nvme"
+      size        = "50"
+    }
+  }
+
+  network_interface {
+    subnet_id = "${yandex_vpc_subnet.default.id}"
+    nat       = "true"
+  }
+
+  metadata = {
+    ssh-keys = "user-data = "${file("~/terr2/meta.txt")}"
+  }
+}
+resource "yandex_vpc_network" "default" {
+  name = "net"
+}
+
+resource "yandex_vpc_subnet" "default" {
+  name = "subnet"
+  zone       = "ru-central1-a"
+  network_id = "${yandex_vpc_network.foo.id}"
+  v4_cidr_blocks = ["192.168.101.0/24"]
+}
+```
+
+
+ - meta.txt
+```
+users:
+  - name: vagrant
+    groups: wheel
+    shell: /bin/bash
+    sudo: ['ALL=(ALL) NOPASSWD:ALL']
+    ssh-authorized-keys:
+      - ssh-rsa AAAAB3NzaC
+```
+
+ - otput.tf
+```
+output "internal_ip_address_node01_yandex_cloud" {
+  value = yandex_compute_instance.node01.network_interface.0.ip_address
+}
+
+output "external_ip_address_node01_yandex_cloud" {
+  value = yandex_compute_instance.node01.network_interface.0.nat_ip_address
+}
 ```
