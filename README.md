@@ -261,6 +261,7 @@ Terraform will perform the following actions:
           + placement_group_id = (known after apply)
         }
 
+      
       + resources {
           + core_fraction = 20
           + cores         = 2
