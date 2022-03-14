@@ -15,17 +15,17 @@ Terraform will perform the following actions:
   # yandex_compute_instance.vm_count[0] will be created
   + resource "yandex_compute_instance" "vm_count" {
       + created_at                = (known after apply)
-      + description               = "Homework 07-03"
-      + folder_id                 = "b1gjc6s8ee54eedsvb9o"
+      + description               = "hw 7.3"
+      + folder_id                 = "b1g95kjdui4sc1hk937i"
       + fqdn                      = (known after apply)
-      + hostname                  = "netology-07-03"
+      + hostname                  = "net-7.3"
       + id                        = (known after apply)
       + metadata                  = {
           + "ssh-keys" = <<-EOT
-                user:ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMms+VofMVXYt1it7nXIgRg5m1zfO0W7nG+uVyjks9e9 abeletsky@gmail.com
+                user:ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMms+VofMVXYt1it7nXIgRg5m1zfO0W7nG+uVyjks9e9 vagrant
             EOT
         }
-      + name                      = "07-03-count-prod"
+      + name                      = "07-03"
       + network_acceleration_type = "standard"
       + platform_id               = "standard-v1"
       + service_account_id        = (known after apply)
@@ -80,17 +80,17 @@ Terraform will perform the following actions:
   # yandex_compute_instance.vm_count[1] will be created
   + resource "yandex_compute_instance" "vm_count" {
       + created_at                = (known after apply)
-      + description               = "Homework 07-03"
+      + description               = "hw 7.3"
       + folder_id                 = "b1gjc6s8ee54eedsvb9o"
       + fqdn                      = (known after apply)
-      + hostname                  = "netology-07-03"
+      + hostname                  = "net-7.3"
       + id                        = (known after apply)
       + metadata                  = {
           + "ssh-keys" = <<-EOT
-                user:ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMms+VofMVXYt1it7nXIgRg5m1zfO0W7nG+uVyjks9e9 abeletsky@gmail.com
+                user:ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMms+VofMVXYt1it7nXIgRg5m1zfO0W7nG+uVyjks9e9 vagrant
             EOT
         }
-      + name                      = "07-03-count-prod"
+      + name                      = "07-03"
       + network_acceleration_type = "standard"
       + platform_id               = "standard-v1"
       + service_account_id        = (known after apply)
@@ -145,17 +145,17 @@ Terraform will perform the following actions:
   # yandex_compute_instance.vm_foreach["prod"] will be created
   + resource "yandex_compute_instance" "vm_foreach" {
       + created_at                = (known after apply)
-      + description               = "Homework 07-03"
+      + description               = "hw 7.3"
       + folder_id                 = "b1gjc6s8ee54eedsvb9o"
       + fqdn                      = (known after apply)
-      + hostname                  = "netology-07-03"
+      + hostname                  = "net-7.3"
       + id                        = (known after apply)
       + metadata                  = {
           + "ssh-keys" = <<-EOT
-                user:ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMms+VofMVXYt1it7nXIgRg5m1zfO0W7nG+uVyjks9e9 abeletsky@gmail.com
+                user:ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMms+VofMVXYt1it7nXIgRg5m1zfO0W7nG+uVyjks9e9 vagrant
             EOT
         }
-      + name                      = "07-03-for-each-prod"
+      + name                      = "7-3-each-prod"
       + network_acceleration_type = "standard"
       + platform_id               = "standard-v1"
       + service_account_id        = (known after apply)
@@ -210,17 +210,17 @@ Terraform will perform the following actions:
   # yandex_compute_instance.vm_foreach["stage"] will be created
   + resource "yandex_compute_instance" "vm_foreach" {
       + created_at                = (known after apply)
-      + description               = "Homework 07-03"
+      + description               = "hw 7.3"
       + folder_id                 = "b1gjc6s8ee54eedsvb9o"
       + fqdn                      = (known after apply)
-      + hostname                  = "netology-07-03"
+      + hostname                  = "net-7.3"
       + id                        = (known after apply)
       + metadata                  = {
           + "ssh-keys" = <<-EOT
-                user:ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMms+VofMVXYt1it7nXIgRg5m1zfO0W7nG+uVyjks9e9 abeletsky@gmail.com
+                user:ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMms+VofMVXYt1it7nXIgRg5m1zfO0W7nG+uVyjks9e9 vagrant
             EOT
         }
-      + name                      = "07-03-for-each-stage"
+      + name                      = "7-3-each"
       + network_acceleration_type = "standard"
       + platform_id               = "standard-v1"
       + service_account_id        = (known after apply)
