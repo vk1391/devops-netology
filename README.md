@@ -1,81 +1,276 @@
-2.  - 1. Packer
-    - 2.
- - main.tf
-```terraform {
-  required_providers {
-    yandex = {
-      source  = "yandex-cloud/yandex"
-      version = "0.68.0"
+2. В AWS не зарегестрироваться ныне.Достаточно сложно сопастовить требования для AWS с Я.Облаком.Расписали хотя бы 
+```
+terraform workspace list
+  default
+* prod
+  stage
+  
+$ terraform plan
+
+Terraform used the selected providers to generate the following execution plan. Resource actions are indicated with the following symbols:
+  + create
+
+Terraform will perform the following actions:
+
+  # yandex_compute_instance.vm_count[0] will be created
+  + resource "yandex_compute_instance" "vm_count" {
+      + created_at                = (known after apply)
+      + description               = "Homework 07-03"
+      + folder_id                 = "b1gjc6s8ee54eedsvb9o"
+      + fqdn                      = (known after apply)
+      + hostname                  = "netology-07-03"
+      + id                        = (known after apply)
+      + metadata                  = {
+          + "ssh-keys" = <<-EOT
+                user:ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMms+VofMVXYt1it7nXIgRg5m1zfO0W7nG+uVyjks9e9 abeletsky@gmail.com
+            EOT
+        }
+      + name                      = "07-03-count-prod"
+      + network_acceleration_type = "standard"
+      + platform_id               = "standard-v1"
+      + service_account_id        = (known after apply)
+      + status                    = (known after apply)
+      + zone                      = "ru-central1-a"
+
+      + boot_disk {
+          + auto_delete = true
+          + device_name = (known after apply)
+          + disk_id     = (known after apply)
+          + mode        = (known after apply)
+
+          + initialize_params {
+              + description = (known after apply)
+              + image_id    = "fd8f30hur3255mjfi3hq"
+              + name        = (known after apply)
+              + size        = 20
+              + snapshot_id = (known after apply)
+              + type        = "network-hdd"
+            }
+        }
+
+      + network_interface {
+          + index              = (known after apply)
+          + ip_address         = (known after apply)
+          + ipv4               = true
+          + ipv6               = (known after apply)
+          + ipv6_address       = (known after apply)
+          + mac_address        = (known after apply)
+          + nat                = false
+          + nat_ip_address     = (known after apply)
+          + nat_ip_version     = (known after apply)
+          + security_group_ids = (known after apply)
+          + subnet_id          = "e9bnq0s714tmjo39791g"
+        }
+
+      + placement_policy {
+          + placement_group_id = (known after apply)
+        }
+
+      + resources {
+          + core_fraction = 20
+          + cores         = 2
+          + memory        = 4
+        }
+
+      + scheduling_policy {
+          + preemptible = (known after apply)
+        }
     }
-  }
-}
 
-provider "yandex" {
-token = 
-cloud_id                 = "b1g8v8m7g8l57ts5j64b"
-folder_id                = "b1g95kjdui4sc1hk937i"
-zone                     = "ru-central1-a"
+  # yandex_compute_instance.vm_count[1] will be created
+  + resource "yandex_compute_instance" "vm_count" {
+      + created_at                = (known after apply)
+      + description               = "Homework 07-03"
+      + folder_id                 = "b1gjc6s8ee54eedsvb9o"
+      + fqdn                      = (known after apply)
+      + hostname                  = "netology-07-03"
+      + id                        = (known after apply)
+      + metadata                  = {
+          + "ssh-keys" = <<-EOT
+                user:ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMms+VofMVXYt1it7nXIgRg5m1zfO0W7nG+uVyjks9e9 abeletsky@gmail.com
+            EOT
+        }
+      + name                      = "07-03-count-prod"
+      + network_acceleration_type = "standard"
+      + platform_id               = "standard-v1"
+      + service_account_id        = (known after apply)
+      + status                    = (known after apply)
+      + zone                      = "ru-central1-a"
 
-resource "yandex_compute_instance" "node01" {
-name                      = "node01"
-zone                      = "ru-central1-a"
-hostname                  = "node01.netology.cloud"
-allow_stopping_for_update = true
+      + boot_disk {
+          + auto_delete = true
+          + device_name = (known after apply)
+          + disk_id     = (known after apply)
+          + mode        = (known after apply)
 
-resources {
-  cores  = 8
-  memory = 8
-  }
+          + initialize_params {
+              + description = (known after apply)
+              + image_id    = "fd8f30hur3255mjfi3hq"
+              + name        = (known after apply)
+              + size        = 20
+              + snapshot_id = (known after apply)
+              + type        = "network-hdd"
+            }
+        }
 
-  boot_disk {
-    initialize_params {
-      image_id    = "fd80le4b8gt2u33lvubr"
-      name        = "root-node01"
-      type        = "network-nvme"
-      size        = "50"
+      + network_interface {
+          + index              = (known after apply)
+          + ip_address         = (known after apply)
+          + ipv4               = true
+          + ipv6               = (known after apply)
+          + ipv6_address       = (known after apply)
+          + mac_address        = (known after apply)
+          + nat                = false
+          + nat_ip_address     = (known after apply)
+          + nat_ip_version     = (known after apply)
+          + security_group_ids = (known after apply)
+          + subnet_id          = "e9bnq0s714tmjo39791g"
+        }
+
+      + placement_policy {
+          + placement_group_id = (known after apply)
+        }
+
+      + resources {
+          + core_fraction = 20
+          + cores         = 2
+          + memory        = 4
+        }
+
+      + scheduling_policy {
+          + preemptible = (known after apply)
+        }
     }
-  }
 
-  network_interface {
-    subnet_id = "${yandex_vpc_subnet.default.id}"
-    nat       = "true"
-  }
+  # yandex_compute_instance.vm_foreach["prod"] will be created
+  + resource "yandex_compute_instance" "vm_foreach" {
+      + created_at                = (known after apply)
+      + description               = "Homework 07-03"
+      + folder_id                 = "b1gjc6s8ee54eedsvb9o"
+      + fqdn                      = (known after apply)
+      + hostname                  = "netology-07-03"
+      + id                        = (known after apply)
+      + metadata                  = {
+          + "ssh-keys" = <<-EOT
+                user:ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMms+VofMVXYt1it7nXIgRg5m1zfO0W7nG+uVyjks9e9 abeletsky@gmail.com
+            EOT
+        }
+      + name                      = "07-03-for-each-prod"
+      + network_acceleration_type = "standard"
+      + platform_id               = "standard-v1"
+      + service_account_id        = (known after apply)
+      + status                    = (known after apply)
+      + zone                      = "ru-central1-a"
 
-  metadata = {
-    ssh-keys = "user-data = "${file("~/terr2/meta.txt")}"
-  }
-}
-resource "yandex_vpc_network" "default" {
-  name = "net"
-}
+      + boot_disk {
+          + auto_delete = true
+          + device_name = (known after apply)
+          + disk_id     = (known after apply)
+          + mode        = (known after apply)
 
-resource "yandex_vpc_subnet" "default" {
-  name = "subnet"
-  zone       = "ru-central1-a"
-  network_id = "${yandex_vpc_network.foo.id}"
-  v4_cidr_blocks = ["192.168.101.0/24"]
-}
-```
+          + initialize_params {
+              + description = (known after apply)
+              + image_id    = "fd8f30hur3255mjfi3hq"
+              + name        = (known after apply)
+              + size        = 20
+              + snapshot_id = (known after apply)
+              + type        = "network-hdd"
+            }
+        }
 
+      + network_interface {
+          + index              = (known after apply)
+          + ip_address         = (known after apply)
+          + ipv4               = true
+          + ipv6               = (known after apply)
+          + ipv6_address       = (known after apply)
+          + mac_address        = (known after apply)
+          + nat                = false
+          + nat_ip_address     = (known after apply)
+          + nat_ip_version     = (known after apply)
+          + security_group_ids = (known after apply)
+          + subnet_id          = "e9bnq0s714tmjo39791g"
+        }
 
- - meta.txt
-```
-users:
-  - name: vagrant
-    groups: wheel
-    shell: /bin/bash
-    sudo: ['ALL=(ALL) NOPASSWD:ALL']
-    ssh-authorized-keys:
-      - ssh-rsa AAAAB3NzaC
-```
+      + placement_policy {
+          + placement_group_id = (known after apply)
+        }
 
- - otput.tf
-```
-output "internal_ip_address_node01_yandex_cloud" {
-  value = yandex_compute_instance.node01.network_interface.0.ip_address
-}
+      + resources {
+          + core_fraction = 20
+          + cores         = 2
+          + memory        = 4
+        }
 
-output "external_ip_address_node01_yandex_cloud" {
-  value = yandex_compute_instance.node01.network_interface.0.nat_ip_address
-}
+      + scheduling_policy {
+          + preemptible = (known after apply)
+        }
+    }
+
+  # yandex_compute_instance.vm_foreach["stage"] will be created
+  + resource "yandex_compute_instance" "vm_foreach" {
+      + created_at                = (known after apply)
+      + description               = "Homework 07-03"
+      + folder_id                 = "b1gjc6s8ee54eedsvb9o"
+      + fqdn                      = (known after apply)
+      + hostname                  = "netology-07-03"
+      + id                        = (known after apply)
+      + metadata                  = {
+          + "ssh-keys" = <<-EOT
+                user:ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMms+VofMVXYt1it7nXIgRg5m1zfO0W7nG+uVyjks9e9 abeletsky@gmail.com
+            EOT
+        }
+      + name                      = "07-03-for-each-stage"
+      + network_acceleration_type = "standard"
+      + platform_id               = "standard-v1"
+      + service_account_id        = (known after apply)
+      + status                    = (known after apply)
+      + zone                      = "ru-central1-a"
+
+      + boot_disk {
+          + auto_delete = true
+          + device_name = (known after apply)
+          + disk_id     = (known after apply)
+          + mode        = (known after apply)
+
+          + initialize_params {
+              + description = (known after apply)
+              + image_id    = "fd8f30hur3255mjfi3hq"
+              + name        = (known after apply)
+              + size        = 20
+              + snapshot_id = (known after apply)
+              + type        = "network-hdd"
+            }
+        }
+
+      + network_interface {
+          + index              = (known after apply)
+          + ip_address         = (known after apply)
+          + ipv4               = true
+          + ipv6               = (known after apply)
+          + ipv6_address       = (known after apply)
+          + mac_address        = (known after apply)
+          + nat                = false
+          + nat_ip_address     = (known after apply)
+          + nat_ip_version     = (known after apply)
+          + security_group_ids = (known after apply)
+          + subnet_id          = "e9bnq0s714tmjo39791g"
+        }
+
+      + placement_policy {
+          + placement_group_id = (known after apply)
+        }
+
+      + resources {
+          + core_fraction = 20
+          + cores         = 2
+          + memory        = 4
+        }
+
+      + scheduling_policy {
+          + preemptible = (known after apply)
+        }
+    }
+
+Plan: 4 to add, 0 to change, 0 to destroy.
 ```
