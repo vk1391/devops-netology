@@ -1,277 +1,81 @@
-2. В AWS не зарегестрироваться ныне.Достаточно сложно сопастовить требования для AWS с Я.Облаком.Расписали хотя бы 
+2. - Задача 2. Написать серверный конфиг для атлантиса.
+Смысл задания – познакомиться с документацией о серверной конфигурации и конфигурации уровня репозитория.
+
+Создай server.yaml который скажет атлантису:
+
+Укажите, что атлантис должен работать только для репозиториев в вашем github (или любом другом) аккаунте.
+На стороне клиентского конфига разрешите изменять workflow, то есть для каждого репозитория можно будет указать свои дополнительные команды.
+В workflow используемом по-умолчанию сделайте так, что бы во время планирования не происходил lock состояния.
+Создай atlantis.yaml который, если поместить в корень terraform проекта, скажет атлантису:
+
+Надо запускать планирование и аплай для двух воркспейсов stage и prod.
+Необходимо включить автопланирование при изменении любых файлов *.tf.
+В качестве результата приложите ссылку на файлы server.yaml и atlantis.yaml.
+Ответ:
+- atlantis.yaml
 ```
-terraform workspace list
-  default
-* prod
-  stage
-  
-$ terraform plan
+version: 3
+automerge: true
+delete_source_branch_on_merge: true
 
-Terraform used the selected providers to generate the following execution plan. Resource actions are indicated with the following symbols:
-  + create
+projects:
+  - workspace: stage
+    dir: .
+    autoplan:
+      when_modified: [ "*.tf" ]
+      enabled: true
+    workflow: myworkflow
 
-Terraform will perform the following actions:
+  - workspace: prod
+    dir: .
+    autoplan:
+      when_modified: [ "*.tf" ]
+      enabled: true
+    workflow: myworkflow
 
-  # yandex_compute_instance.vm_count[0] will be created
-  + resource "yandex_compute_instance" "vm_count" {
-      + created_at                = (known after apply)
-      + description               = "hw 7.3"
-      + folder_id                 = "b1g95kjdui4sc1hk937i"
-      + fqdn                      = (known after apply)
-      + hostname                  = "net-7.3"
-      + id                        = (known after apply)
-      + metadata                  = {
-          + "ssh-keys" = <<-EOT
-                user:ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMms+VofMVXYt1it7nXIgRg5m1zfO0W7nG+uVyjks9e9 vagrant
-            EOT
-        }
-      + name                      = "07-03"
-      + network_acceleration_type = "standard"
-      + platform_id               = "standard-v1"
-      + service_account_id        = (known after apply)
-      + status                    = (known after apply)
-      + zone                      = "ru-central1-a"
+workflows:
+  myworkflow:
+    plan:
+      steps:
+        - init
+        - plan:
+            extra_args: [ "-lock", "false" ]
+        - run: echo planned
+    apply:
+      steps:
+        - run: echo applying
+        - apply
+  ```
+  - server.yaml
+  ```
+  repos:
+  - id: /.*/
+    branch: /.*/
+    allowed_overrides: [ workflow ]
 
-      + boot_disk {
-          + auto_delete = true
-          + device_name = (known after apply)
-          + disk_id     = (known after apply)
-          + mode        = (known after apply)
+  - id: github.com/vk1391/devops-netology
+    branch: /.*/
+    workflow: custom
+    allowed_overrides: [ workflow ]
+    allow_custom_workflows: true
 
-          + initialize_params {
-              + description = (known after apply)
-              + image_id    = "fd8f30hur3255mjfi3hq"
-              + name        = (known after apply)
-              + size        = 20
-              + snapshot_id = (known after apply)
-              + type        = "network-hdd"
-            }
-        }
-
-      + network_interface {
-          + index              = (known after apply)
-          + ip_address         = (known after apply)
-          + ipv4               = true
-          + ipv6               = (known after apply)
-          + ipv6_address       = (known after apply)
-          + mac_address        = (known after apply)
-          + nat                = false
-          + nat_ip_address     = (known after apply)
-          + nat_ip_version     = (known after apply)
-          + security_group_ids = (known after apply)
-          + subnet_id          = "e9bnq0s714tmjo39791g"
-        }
-
-      + placement_policy {
-          + placement_group_id = (known after apply)
-        }
-
-      + resources {
-          + core_fraction = 20
-          + cores         = 2
-          + memory        = 4
-        }
-
-      + scheduling_policy {
-          + preemptible = (known after apply)
-        }
-    }
-
-  # yandex_compute_instance.vm_count[1] will be created
-  + resource "yandex_compute_instance" "vm_count" {
-      + created_at                = (known after apply)
-      + description               = "hw 7.3"
-      + folder_id                 = "b1gjc6s8ee54eedsvb9o"
-      + fqdn                      = (known after apply)
-      + hostname                  = "net-7.3"
-      + id                        = (known after apply)
-      + metadata                  = {
-          + "ssh-keys" = <<-EOT
-                user:ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMms+VofMVXYt1it7nXIgRg5m1zfO0W7nG+uVyjks9e9 vagrant
-            EOT
-        }
-      + name                      = "07-03"
-      + network_acceleration_type = "standard"
-      + platform_id               = "standard-v1"
-      + service_account_id        = (known after apply)
-      + status                    = (known after apply)
-      + zone                      = "ru-central1-a"
-
-      + boot_disk {
-          + auto_delete = true
-          + device_name = (known after apply)
-          + disk_id     = (known after apply)
-          + mode        = (known after apply)
-
-          + initialize_params {
-              + description = (known after apply)
-              + image_id    = "fd8f30hur3255mjfi3hq"
-              + name        = (known after apply)
-              + size        = 20
-              + snapshot_id = (known after apply)
-              + type        = "network-hdd"
-            }
-        }
-
-      + network_interface {
-          + index              = (known after apply)
-          + ip_address         = (known after apply)
-          + ipv4               = true
-          + ipv6               = (known after apply)
-          + ipv6_address       = (known after apply)
-          + mac_address        = (known after apply)
-          + nat                = false
-          + nat_ip_address     = (known after apply)
-          + nat_ip_version     = (known after apply)
-          + security_group_ids = (known after apply)
-          + subnet_id          = "e9bnq0s714tmjo39791g"
-        }
-
-      + placement_policy {
-          + placement_group_id = (known after apply)
-        }
-
-      + resources {
-          + core_fraction = 20
-          + cores         = 2
-          + memory        = 4
-        }
-
-      + scheduling_policy {
-          + preemptible = (known after apply)
-        }
-    }
-
-  # yandex_compute_instance.vm_foreach["prod"] will be created
-  + resource "yandex_compute_instance" "vm_foreach" {
-      + created_at                = (known after apply)
-      + description               = "hw 7.3"
-      + folder_id                 = "b1gjc6s8ee54eedsvb9o"
-      + fqdn                      = (known after apply)
-      + hostname                  = "net-7.3"
-      + id                        = (known after apply)
-      + metadata                  = {
-          + "ssh-keys" = <<-EOT
-                user:ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMms+VofMVXYt1it7nXIgRg5m1zfO0W7nG+uVyjks9e9 vagrant
-            EOT
-        }
-      + name                      = "7-3-each-prod"
-      + network_acceleration_type = "standard"
-      + platform_id               = "standard-v1"
-      + service_account_id        = (known after apply)
-      + status                    = (known after apply)
-      + zone                      = "ru-central1-a"
-
-      + boot_disk {
-          + auto_delete = true
-          + device_name = (known after apply)
-          + disk_id     = (known after apply)
-          + mode        = (known after apply)
-
-          + initialize_params {
-              + description = (known after apply)
-              + image_id    = "fd8f30hur3255mjfi3hq"
-              + name        = (known after apply)
-              + size        = 20
-              + snapshot_id = (known after apply)
-              + type        = "network-hdd"
-            }
-        }
-
-      + network_interface {
-          + index              = (known after apply)
-          + ip_address         = (known after apply)
-          + ipv4               = true
-          + ipv6               = (known after apply)
-          + ipv6_address       = (known after apply)
-          + mac_address        = (known after apply)
-          + nat                = false
-          + nat_ip_address     = (known after apply)
-          + nat_ip_version     = (known after apply)
-          + security_group_ids = (known after apply)
-          + subnet_id          = "e9bnq0s714tmjo39791g"
-        }
-
-      + placement_policy {
-          + placement_group_id = (known after apply)
-        }
-
-      + resources {
-          + core_fraction = 20
-          + cores         = 2
-          + memory        = 4
-        }
-
-      + scheduling_policy {
-          + preemptible = (known after apply)
-        }
-    }
-
-  # yandex_compute_instance.vm_foreach["stage"] will be created
-  + resource "yandex_compute_instance" "vm_foreach" {
-      + created_at                = (known after apply)
-      + description               = "hw 7.3"
-      + folder_id                 = "b1gjc6s8ee54eedsvb9o"
-      + fqdn                      = (known after apply)
-      + hostname                  = "net-7.3"
-      + id                        = (known after apply)
-      + metadata                  = {
-          + "ssh-keys" = <<-EOT
-                user:ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMms+VofMVXYt1it7nXIgRg5m1zfO0W7nG+uVyjks9e9 vagrant
-            EOT
-        }
-      + name                      = "7-3-each"
-      + network_acceleration_type = "standard"
-      + platform_id               = "standard-v1"
-      + service_account_id        = (known after apply)
-      + status                    = (known after apply)
-      + zone                      = "ru-central1-a"
-
-      + boot_disk {
-          + auto_delete = true
-          + device_name = (known after apply)
-          + disk_id     = (known after apply)
-          + mode        = (known after apply)
-
-          + initialize_params {
-              + description = (known after apply)
-              + image_id    = "fd8f30hur3255mjfi3hq"
-              + name        = (known after apply)
-              + size        = 20
-              + snapshot_id = (known after apply)
-              + type        = "network-hdd"
-            }
-        }
-
-      + network_interface {
-          + index              = (known after apply)
-          + ip_address         = (known after apply)
-          + ipv4               = true
-          + ipv6               = (known after apply)
-          + ipv6_address       = (known after apply)
-          + mac_address        = (known after apply)
-          + nat                = false
-          + nat_ip_address     = (known after apply)
-          + nat_ip_version     = (known after apply)
-          + security_group_ids = (known after apply)
-          + subnet_id          = "e9bnq0s714tmjo39791g"
-        }
-
-      + placement_policy {
-          + placement_group_id = (known after apply)
-        }
-
-      
-      + resources {
-          + core_fraction = 20
-          + cores         = 2
-          + memory        = 4
-        }
-
-      + scheduling_policy {
-          + preemptible = (known after apply)
-        }
-    }
-
-Plan: 4 to add, 0 to change, 0 to destroy.
-```
+workflows:
+  custom:
+    plan:
+      steps:
+        - init
+        - plan:
+            extra_args: [ "-lock", "false" ]
+        - run: echo planned
+    apply:
+      steps:
+        - run: echo applying
+        - apply
+ ```
+ 3.Задача 3. Знакомство с каталогом модулей.
+В каталоге модулей найдите официальный модуль от aws для создания ec2 инстансов.
+Изучите как устроен модуль. Задумайтесь, будете ли в своем проекте использовать этот модуль или непосредственно ресурс aws_instance без помощи модуля?
+В рамках предпоследнего задания был создан ec2 при помощи ресурса aws_instance. Создайте аналогичный инстанс при помощи найденного модуля.
+В качестве результата задания приложите ссылку на созданный блок конфигураций.
+Ответ:
+ - Так как в aws не могу зарегестрироваться,по сути выполнить дз тож не могу.Среди модулей нашёл https://registry.terraform.io/modules/glavk/compute/yandex/latest. Я так понимаю это оно 
