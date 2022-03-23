@@ -1,81 +1,67 @@
-2. - Задача 2. Написать серверный конфиг для атлантиса.
-Смысл задания – познакомиться с документацией о серверной конфигурации и конфигурации уровня репозитория.
-
-Создай server.yaml который скажет атлантису:
-
-Укажите, что атлантис должен работать только для репозиториев в вашем github (или любом другом) аккаунте.
-На стороне клиентского конфига разрешите изменять workflow, то есть для каждого репозитория можно будет указать свои дополнительные команды.
-В workflow используемом по-умолчанию сделайте так, что бы во время планирования не происходил lock состояния.
-Создай atlantis.yaml который, если поместить в корень terraform проекта, скажет атлантису:
-
-Надо запускать планирование и аплай для двух воркспейсов stage и prod.
-Необходимо включить автопланирование при изменении любых файлов *.tf.
-В качестве результата приложите ссылку на файлы server.yaml и atlantis.yaml.
-Ответ:
-- atlantis.yaml
+3. 
+- 1. Напишите программу для перевода метров в футы (1 фут = 0.3048 метр). Можно запросить исходные данные у пользователя, а можно статически задать в коде. Для взаимодействия с пользователем можно использовать функцию Scanf:
 ```
-version: 3
-automerge: true
-delete_source_branch_on_merge: true
+package main
 
-projects:
-  - workspace: stage
-    dir: .
-    autoplan:
-      when_modified: [ "*.tf" ]
-      enabled: true
-    workflow: myworkflow
+import "fmt"
 
-  - workspace: prod
-    dir: .
-    autoplan:
-      when_modified: [ "*.tf" ]
-      enabled: true
-    workflow: myworkflow
+func main() {
+    fmt.Print("Enter a number: ")
+    var input float64
+    fmt.Scanf("%f", &input)
 
-workflows:
-  myworkflow:
-    plan:
-      steps:
-        - init
-        - plan:
-            extra_args: [ "-lock", "false" ]
-        - run: echo planned
-    apply:
-      steps:
-        - run: echo applying
-        - apply
-  ```
-  - server.yaml
-  ```
-  repos:
-  - id: /.*/
-    branch: /.*/
-    allowed_overrides: [ workflow ]
+    output := input * 2
 
-  - id: github.com/vk1391/devops-netology
-    branch: /.*/
-    workflow: custom
-    allowed_overrides: [ workflow ]
-    allow_custom_workflows: true
-
-workflows:
-  custom:
-    plan:
-      steps:
-        - init
-        - plan:
-            extra_args: [ "-lock", "false" ]
-        - run: echo planned
-    apply:
-      steps:
-        - run: echo applying
-        - apply
- ```
- 3.Задача 3. Знакомство с каталогом модулей.
-В каталоге модулей найдите официальный модуль от aws для создания ec2 инстансов.
-Изучите как устроен модуль. Задумайтесь, будете ли в своем проекте использовать этот модуль или непосредственно ресурс aws_instance без помощи модуля?
-В рамках предпоследнего задания был создан ec2 при помощи ресурса aws_instance. Создайте аналогичный инстанс при помощи найденного модуля.
-В качестве результата задания приложите ссылку на созданный блок конфигураций.
+    fmt.Println(output)    
+}
+```
 Ответ:
- - Так как в aws не могу зарегестрироваться,по сути выполнить дз тож не могу.Среди модулей нашёл https://registry.terraform.io/modules/glavk/compute/yandex/latest. Я так понимаю это оно 
+```
+package main
+import "fmt"
+func main() {
+	fmt.Print("Enter a number: ")
+	var input float64
+	fmt.Scanf("%f", &input)
+	output := input / 0.3048
+	fmt.Println("Итого: ", output, " футов")
+}
+```
+- 2.Напишите программу, которая найдет наименьший элемент в любом заданном списке, например:
+```
+x := []int{48,96,86,68,57,82,63,70,37,34,83,27,19,97,9,17,}
+```
+Ответ:
+```
+package main
+import "fmt"
+func main() {
+	x := []int{48, 96, 86, 68, 57, 82, 63, 70, 37, 34, 83, 27, 19, 97, 9, 17}
+	if len(x) > 0 {
+		var min = x[0]
+		for i := 1; i < len(x); i++ {
+			if x[i] < min {
+				min = x[i]
+			}
+		}
+		fmt.Println("Минимальный элемент: ", min)
+	} else {
+		fmt.Println("Пусто!!!")
+	}
+}
+```
+
+- 3. Напишите программу, которая выводит числа от 1 до 100, которые делятся на 3. То есть (3, 6, 9, …).
+Ответ:
+```
+package main
+import "fmt"
+func main() {
+	fmt.Println("Числа, делящиеся на 3:")
+	for i := 1; i <= 100; i++ {
+		if i%3 == 0 {
+			fmt.Println(i)
+		}
+	}
+}
+```
