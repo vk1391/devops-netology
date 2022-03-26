@@ -1,67 +1,17 @@
-3. 
-- 1. Напишите программу для перевода метров в футы (1 фут = 0.3048 метр). Можно запросить исходные данные у пользователя, а можно статически задать в коде. Для взаимодействия с пользователем можно использовать функцию Scanf:
-```
-package main
+1. Давайте потренируемся читать исходный код AWS провайдера, который можно склонировать от сюда: https://github.com/hashicorp/terraform-provider-aws.git. Просто найдите нужные ресурсы в исходном коде и ответы на вопросы станут понятны.
 
-import "fmt"
+ - 1. Найдите, где перечислены все доступные resource и data_source, приложите ссылку на эти строки в коде на гитхабе.
+ - 2. Для создания очереди сообщений SQS используется ресурс aws_sqs_queue у которого есть параметр name.
+       * С каким другим параметром конфликтует name? Приложите строчку кода, в которой это указано.
+       * Какая максимальная длина имени?
+       * Какому регулярному выражению должно подчиняться имя?
 
-func main() {
-    fmt.Print("Enter a number: ")
-    var input float64
-    fmt.Scanf("%f", &input)
+ - Ответ:
+   1. нашёл в файле [provider.go](https://github.com/hashicorp/terraform-provider-aws/blob/main/internal/provider/provider.go)
+   [Resource](https://github.com/hashicorp/terraform-provider-aws/blob/main/internal/provider/provider.go#L737) 737-1760 строки
+   [Data_source](https://github.com/hashicorp/terraform-provider-aws/blob/main/internal/provider/provider.go#L344) 344-735 строки
 
-    output := input * 2
 
-    fmt.Println(output)    
-}
-```
-Ответ:
-```
-package main
-import "fmt"
-func main() {
-	fmt.Print("Enter a number: ")
-	var input float64
-	fmt.Scanf("%f", &input)
-	output := input / 0.3048
-	fmt.Println("Итого: ", output, " футов")
-}
-```
-- 2.Напишите программу, которая найдет наименьший элемент в любом заданном списке, например:
-```
-x := []int{48,96,86,68,57,82,63,70,37,34,83,27,19,97,9,17,}
-```
-Ответ:
-```
-package main
-import "fmt"
-func main() {
-	x := []int{48, 96, 86, 68, 57, 82, 63, 70, 37, 34, 83, 27, 19, 97, 9, 17}
-	if len(x) > 0 {
-		var min = x[0]
-		for i := 1; i < len(x); i++ {
-			if x[i] < min {
-				min = x[i]
-			}
-		}
-		fmt.Println("Минимальный элемент: ", min)
-	} else {
-		fmt.Println("Пусто!!!")
-	}
-}
-```
-
-- 3. Напишите программу, которая выводит числа от 1 до 100, которые делятся на 3. То есть (3, 6, 9, …).
-Ответ:
-```
-package main
-import "fmt"
-func main() {
-	fmt.Println("Числа, делящиеся на 3:")
-	for i := 1; i <= 100; i++ {
-		if i%3 == 0 {
-			fmt.Println(i)
-		}
-	}
-}
-```
+2. Для создания очереди сообщений SQS используется ресурс aws_sqs_queue, у которого есть параметр name.
+    - конфликтует с [name_prefix](https://github.com/hashicorp/terraform-provider-aws/blob/5902887f418edd969cff285acb35464a9c435c11/internal/service/sqs/queue.go#L88)
+    - Я так понимаю максимальная длина имени и регулярное выражение не заданы.
