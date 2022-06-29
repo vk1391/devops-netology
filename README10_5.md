@@ -20,4 +20,7 @@
 Дополнительно поэкспериментируйте с правилами алёртинга. Выбирайте разные условия отправки и создавайте sample events.
 
 Ответ:
-![Иллюстрация к проекту](https://github.com/vk1391/devops-netology/blob/c11decc314c360b37d7fe5671d1deae82f302f13/sentry4.jpg)
+ - Alert в Sentry
+![Иллюстрация к проекту](https://github.com/vk1391/devops-netology/blob/ff221cc28ad0674f0fa28568e9b2c9c1b46a89e8/sentry5.jpg)
+ - Alert на почте
+![Иллюстрация к проекту](https://github.com/vk1391/devops-netology/blob/ff221cc28ad0674f0fa28568e9b2c9c1b46a89e8/sentry6.jpg)
