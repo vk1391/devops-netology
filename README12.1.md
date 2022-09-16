@@ -1,4 +1,6 @@
-1. ```vagrant@minikube:~$ sudo  minikube status
+1. Установить Minikube
+```
+vagrant@minikube:~$ sudo  minikube status
 minikube
 type: Control Plane
 host: Running
@@ -6,7 +8,8 @@ kubelet: Running
 apiserver: Running
 kubeconfig: Configured
 ```
-2.```
+2-3.  Запуск Hello World,Установить kubectl
+```
 kubectl get services
 NAME         TYPE           CLUSTER-IP    EXTERNAL-IP   PORT(S)          AGE
 hello-node   LoadBalancer   10.105.32.0   <pending>     8080:32752/TCP   14s
