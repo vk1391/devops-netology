@@ -1,4 +1,8 @@
-1.
+1.Для начала следует подготовить запуск приложения в stage окружении с простыми настройками. Требования:
+
+ - под содержит в себе 2 контейнера — фронтенд, бекенд;
+ - регулируется с помощью deployment фронтенд и бекенд;
+ - база данных — через statefulset.
 ```
 secretsmysql.yaml
 
@@ -125,34 +129,43 @@ spec:
         selector:
          matchLabels:
           type: local
-          
- frontbackdeploy.yaml
- 
- # Config Stage Pod
+ ```         
+ - frontback.yaml
+ ```
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: fb-pod
-  labels:
-    app: fb-app
 spec:
+  replicas: 1
   selector:
     matchLabels:
-      app: fb-app
+      app: fb_app1
   template:
     metadata:
       labels:
-        app: fb-app
+        app: fb_app1
     spec:
-    # Config Containers
       containers:
-      - name: front
-        image: nginx:latest
+      - name: frontend
+        image: avloton/13-kube-frontend
+        imagePullPolicy: IfNotPresent
+        resources:
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
         ports:
         - containerPort: 80
-      - name: back
-        image: debian
-        command: ["sleep", "3600"]
+      - name: backend
+        image: avloton/13-kube-backend
+        imagePullPolicy: IfNotPresent
+        resources:
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 9000
+
 ---
 # Config Service
 apiVersion: v1
@@ -193,3 +206,99 @@ NAME       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM            
 mysql-01   5Gi        RWO            Retain           Bound    test/mysql-persistent-storage-mysql-container-0   localstorage            18m
 mysql-02   5Gi        RWO            Retain           Bound    test/mysql-persistent-storage-mysql-container-1   localstorage            18m
 ```
+
+2.Следующим шагом будет запуск приложения в production окружении. Требования сложнее:
+
+ - каждый компонент (база, бекенд, фронтенд) запускаются в своем поде, регулируются отдельными deployment’ами;
+ - для связи используются service (у каждого компонента свой);
+ - в окружении фронта прописан адрес сервиса бекенда;
+ - в окружении бекенда прописан адрес сервиса базы данных.
+ 
+ 
+ 
+front.yaml
+```
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+spec:
+  selector:
+    app: frontend
+  ports:
+    - port: 80
+  type: ClusterIP  
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+        - name: frontend
+          image: avloton/13-kube-frontend
+          env:
+            - name: BASE_URL
+              value: http://backend:9000
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              memory: "768Mi"
+              cpu: "500m"
+          ports:
+            - containerPort: 80
+```
+
+ - Бэкенд:
+
+back.yaml
+```
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend
+spec:
+  selector:
+    app: backend
+  ports:
+    - port: 9000
+  type: ClusterIP  
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+        - name: backend
+          image: avloton/13-kube-backend
+          env:
+            - name: DATABASE_URL
+              value: mysql://user:password@db:3306
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              memory: "768Mi"
+              cpu: "500m"
+          ports:
+            - containerPort: 9000
