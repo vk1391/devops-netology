@@ -1,7 +1,7 @@
 1. Необходимо упаковать приложение в чарт для деплоя в разные окружения. Требования:
 
-каждый компонент приложения деплоится отдельным deployment’ом/statefulset’ом;
-в переменных чарта измените образ приложения для изменения версии.
+ - каждый компонент приложения деплоится отдельным deployment’ом/statefulset’ом;
+ - в переменных чарта измените образ приложения для изменения версии.
 ```
 helm template myapp
 WARNING: Kubernetes configuration file is group-readable. This is insecure. Location: /home/vagrant/.kube/config
