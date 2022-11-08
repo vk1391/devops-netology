@@ -3,47 +3,6 @@
  - каждый компонент приложения деплоится отдельным deployment’ом/statefulset’ом;
  - в переменных чарта измените образ приложения для изменения версии.
 ```
-helm template myapp
-WARNING: Kubernetes configuration file is group-readable. This is insecure. Location: /home/vagrant/.kube/config
-WARNING: Kubernetes configuration file is world-readable. This is insecure. Location: /home/vagrant/.kube/config
----
-# Source: myapp/templates/sc.yaml
-apiVersion: storage.k8s.io/v1
-kind: StorageClass
-metadata:
-  name: local-storage
-provisioner: kubernetes.io/no-provisioner
-volumeBindingMode: WaitForFirstConsumer
----
-# Source: myapp/templates/storage.yaml
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: mysql-pv-claim
-  labels:
-    type: local
-spec:
-  storageClassName: manual
-  capacity:
-    storage: 2Gi
-  accessModes:
-    - ReadWriteOnce
-  hostPath:
-    path: "/mnt/data"
----
-# Source: myapp/templates/storage.yaml
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: mysql-pv-claim
-spec:
-  storageClassName: manual
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 2Gi
----
 # Source: myapp/templates/back-service.yaml
 apiVersion: v1
 kind: Service
@@ -74,13 +33,15 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: mysql
   namespace: test
+  name: db
 spec:
-  ports:
-  - port: 3306
   selector:
-    app: mysql
+    app: db
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
 ---
 # Source: myapp/templates/back-deploy.yaml
 apiVersion: apps/v1
@@ -103,7 +64,7 @@ spec:
           image: nginx:latest
           env:
             - name: DATABASE_URL
-              value: mysql://user:password@db:3306
+              value: postgres://user:password@db:5432
           imagePullPolicy: IfNotPresent
           resources:
             limits:
@@ -144,67 +105,70 @@ spec:
 ---
 # Source: myapp/templates/mysql-deploy.yaml
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
-  name: mysql
   namespace: test
+  name: db
 spec:
   selector:
     matchLabels:
-      app: mysql
-  strategy:
-    type: Recreate
+      app: db
+  serviceName: db
+  replicas: 1
   template:
     metadata:
       labels:
-        app: mysql
+        app: db
     spec:
+      terminationGracePeriodSeconds: 10
       containers:
-      - image: mysql:latest
-        name: mysql
-        env:
-        - name: MYSQL_ROOT_PASSWORD
-          value: Admin
+      - name: db
+        image: postgres:13-alpine
         ports:
-        - containerPort: 3306
-          name: mysql
-        volumeMounts:
-        - name: mysql-persistent-storage
-          mountPath: /var/lib/mysql
-      volumes:
-      - name: mysql-persistent-storage
-        persistentVolumeClaim:
-          claimName: mysql-pv-claim
+        - containerPort: 5432
+        env:
+          - name: POSTGRES_PASSWORD
+            value: postgres
+        
+          - name: POSTGRES_USER
+            value: postgres
+        
+          - name: POSTGRES_DB
+            value: news
 ```
 
 2. Подготовив чарт, необходимо его проверить. Попробуйте запустить несколько копий приложения
+
+ -  создал в дефолтном namespace test 
+ `helm install rel1.0 myapp` 
+ -  создал в namespace test1
+`helm install rel1.1 myapp --set namespace=test1`
+ - создал копию в дефолтном неймспейсе test
+`helm install rel1.2 myapp --set backendName=back --set frontendName=front --set statefulset.name=db1` 
+
+ - результат
 ```
-vagrant@vagrant:~$ helm install myapp2 myapp --set namespace=test2
-vagrant@vagrant:~$ helm list
-WARNING: Kubernetes configuration file is group-readable. This is insecure. Location: /home/vagrant/.kube/config
-WARNING: Kubernetes configuration file is world-readable. This is insecure. Location: /home/vagrant/.kube/config
-NAME    NAMESPACE       REVISION        UPDATED                                 STATUS          CHART           APP VERSION
-myapp2  test            1               2022-11-03 12:22:55.101630904 +0000 UTC deployed        myapp-0.1.1     0.1.1      
-vagrant@vagrant:~$ kubectl get pods
-No resources found in test namespace.
-vagrant@vagrant:~$ kubectl get pods --namespace=test2
+vagrant@vagrant:~$ kubectl get pods -n test
+NAME                                  READY   STATUS    RESTARTS   AGE
+back-58c4c9894c-8k8s4                 1/1     Running   0          3m19s
+backend-775cc76d75-27wll              1/1     Running   0          17m
+db-0                                  1/1     Running   0          17m
+db1-0                                 1/1     Running   0          3m19s
+front-865c6b96ff-4vb6h                0/1     Running   0          3m19s
+frontend-748b68556d-5jq9f             1/1     Running   0          17m
+nfs-server-nfs-server-provisioner-0   1/1     Running   0          41m
+
+vagrant@vagrant:~$ kubectl get pods -n test1
 NAME                        READY   STATUS    RESTARTS   AGE
-backend-54b5b449fb-hdwgz    1/1     Running   0          11m
-frontend-748b68556d-k2cf7   1/1     Running   0          11m
-mysql-97f6cf796-bx9ss       0/1     Pending   0          11m
-vagrant@vagrant:~$ helm upgrade myapp2 myapp --set namespace=test
-WARNING: Kubernetes configuration file is group-readable. This is insecure. Location: /home/vagrant/.kube/config
-WARNING: Kubernetes configuration file is world-readable. This is insecure. Location: /home/vagrant/.kube/config
-Release "myapp2" has been upgraded. Happy Helming!
-NAME: myapp2
-LAST DEPLOYED: Thu Nov  3 12:34:49 2022
-NAMESPACE: test
-STATUS: deployed
-REVISION: 2
-TEST SUITE: None
-vagrant@vagrant:~$ kubectl get pods
-NAME                        READY   STATUS    RESTARTS     AGE
-backend-54b5b449fb-l2zmr    1/1     Running   0            8s
-frontend-748b68556d-88ssb   1/1     Running   0            8s
-mysql-97f6cf796-spjpf       1/1     Running   0            8s
+backend-775cc76d75-8mvpp    1/1     Running   0          17m
+db-0                        1/1     Running   0          17m
+frontend-748b68556d-kx26r   1/1     Running   0          17m
+
+vagrant@vagrant:~$ helm list
+NAME            NAMESPACE       REVISION        UPDATED                                 STATUS          CHART                           APP VERSION
+nfs-server      test            1               2022-11-08 11:54:34.319173 +0000 UTC    deployed        nfs-server-provisioner-1.1.3    2.3.0      
+rel1.0          test            1               2022-11-08 12:18:41.066088016 +0000 UTC deployed        myapp-0.1.1                     0.1.1      
+rel1.1          test            1               2022-11-08 12:18:53.575059045 +0000 UTC deployed        myapp-0.1.1                     0.1.1      
+rel1.2          test            1               2022-11-08 12:32:28.244922295 +0000 UTC deployed        myapp-0.1.1                     0.1.1      
 ```
+
