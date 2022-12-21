@@ -97,26 +97,21 @@ data:
     }
 ```
 Запустил,проинициалилизировал вольт,запустил вторую машину, запустил предложеный скрипт
-
-Вывод на скрипт,но мне кажеться это не самый верный результат
-Проблемы с hvac?
+Нужно было создать и активировать V2 секрет c нужным названием что б заработало
 ```
-sh-5.2# sudo ./script.py 
-Traceback (most recent call last):
-  File "//./script.py", line 10, in <module>
-    client.secrets.kv.v2.create_or_update_secret(
-  File "/usr/local/lib/python3.11/site-packages/hvac/api/secrets_engines/kv_v2.py", line 137, in create_or_update_secret
-    return self._adapter.post(
-           ^^^^^^^^^^^^^^^^^^^
-  File "/usr/local/lib/python3.11/site-packages/hvac/adapters.py", line 125, in post
-    return self.request("post", url, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/local/lib/python3.11/site-packages/hvac/adapters.py", line 356, in request
-    response = super().request(*args, **kwargs)
-               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/local/lib/python3.11/site-packages/hvac/adapters.py", line 322, in request
-    utils.raise_for_error(
-  File "/usr/local/lib/python3.11/site-packages/hvac/utils.py", line 42, in raise_for_error
-    raise exceptions.InvalidPath(message, errors=errors, method=method, url=url)
-hvac.exceptions.InvalidPath: no handler for route 'secret/data/hvac', on post http://10.233.75.27:8200/v1/secret/data/hvac
+client = hvac.Client(
+...     url='http://10.233.71.12:8200',
+...     token='aiphohTaa0eeHei',
+... )
+>>> client.is_authenticated()
+True
+>>> client.secrets.kv.v2.create_or_update_secret(
+...     path='hvac',
+...     secret=dict(netology='ig secret!!!'),
+... )
+{'request_id': '3c27a591-32c5-0951-29b2-3acb9cab3754', 'lease_id': '', 'renewable': False, 'lease_duration': 0, 'data': {'created_time': '2022-12-21T12:18:45.024549822Z', 'custom_metadata': None, 'deletion_time': '', 'destroyed': False, 'version': 3}, 'wrap_info': None, 'warnings': None, 'auth': None}
+>>> client.secrets.kv.v2.read_secret_version(
+...     path='hvac',
+... )
+{'request_id': '889343e4-7cee-c14a-8c5f-3078084835d5', 'lease_id': '', 'renewable': False, 'lease_duration': 0, 'data': {'data': {'netology': 'ig secret!!!'}, 'metadata': {'created_time': '2022-12-21T12:18:45.024549822Z', 'custom_metadata': None, 'deletion_time': '', 'destroyed': False, 'version': 3}}, 'wrap_info': None, 'warnings': None, 'auth': None}
 ```
