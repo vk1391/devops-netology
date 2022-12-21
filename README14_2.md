@@ -100,8 +100,8 @@ data:
 Нужно было создать и активировать V2 секрет c нужным названием что б заработало
 ```
 client = hvac.Client(
-...     url='http://10.233.71.12:8200',
-...     token='aiphohTaa0eeHei',
+...     url='http://10.233.75.27:8200',
+...     token='s.XPcifB7G0AeDLWiiVvzdKvKJ',
 ... )
 >>> client.is_authenticated()
 True
